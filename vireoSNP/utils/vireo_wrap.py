@@ -10,6 +10,8 @@ from .vireo_base import optimal_match, donor_select
 from .vireo_model import Vireo
 from .vireo_doublet import predict_doublet, predit_ambient
 
+import logging
+logger = logging.getLogger()
 
 def _model_fit(_model, AD, DP, max_iter, delay_fit_theta):
     """Temp function for model fitting with multiple processes
@@ -26,6 +28,8 @@ def vireo_wrap(AD, DP, GT_prior=None, n_donor=None, learn_GT=True, n_init=20,
     """
     A wrap function to run vireo with multiple initializations
     """
+    logger.info("Starting vireo")
+
     if type(DP) is np.ndarray and np.mean(DP > 0) < 0.3:
         print("Warning: input matrices is %.1f%% sparse, "
                 %(100 - np.mean(DP > 0) * 100) +
@@ -70,6 +74,7 @@ def vireo_wrap(AD, DP, GT_prior=None, n_donor=None, learn_GT=True, n_init=20,
         _modelCA.set_prior(GT_prior=GT_prior_use)
         _models_all.append(_modelCA)
 
+    logger.info("Initializing...")
     ## Fitting the models with single or multiple processes
     if nproc > 1:
         result = []
@@ -86,6 +91,7 @@ def vireo_wrap(AD, DP, GT_prior=None, n_donor=None, learn_GT=True, n_init=20,
             _models_all[im].fit(AD, DP, min_iter=5, max_iter=max_iter_init,
                 delay_fit_theta=delay_fit_theta, verbose=False)
 
+    logger.info("done.")
     ## select the model with best initialization
     elbo_all = np.array([x.ELBO_[-1] for x in _models_all])
     _idx = np.argmax(elbo_all)
@@ -107,6 +113,7 @@ def vireo_wrap(AD, DP, GT_prior=None, n_donor=None, learn_GT=True, n_init=20,
     print("[vireo] lower bound ranges [%.1f, %.1f, %.1f]"
           %(np.min(elbo_all), np.median(elbo_all), np.max(elbo_all)))
 
+    logger.info("Run main vireo...")
     ## Run Vireo again with updateing genotype
     if GT_prior is not None and n_donor < GT_prior.shape[1]:
         _donor_cnt = np.sum(modelCA.ID_prob, axis=0)
