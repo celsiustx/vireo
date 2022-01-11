@@ -2,20 +2,21 @@
 Genotyping
 ==========
 
-Genotyping (or piling up) a list of common variants on all cells is the first 
-step for demultiplexing with Vireo. This step requires some bioinformatics 
+Genotyping (or piling up) a list of common variants on each cell is a pre-step 
+for demultiplexing them with Vireo. This step requires some bioinformatics 
 efforts, but thanks to many developers in this community, there are a few 
 good existing software to use.
 
 Genotyping cells can be divided into the following two sub-steps, and in 
-different situations, the strategy may need to be optimised for a 
+different situations, the strategy may need to be customised for ensuring 
 high quality genotyping data to demultiplex cells.
 
 **Recommended strategies for genotyping cells:**
 
 * For human or genotyped species: `variant list`_ (given) + cellsnp-lite_ (typing).
-* For species without known common variants: cellsnp-lite_ (calling & typing),
-  or freebayes_ (for calling of heterozygous SNPs first)
+* For species without known common variants: cellsnp-lite_ (calling with mode 2b
+  & typing with mode 1a). freebayes_ is an alternative to cellsnp-lite_ mode 2b
+  for calling of heterozygous SNPs.
 
 .. note::
    cellSNP_ was initially developed in Python based on pysam, which is 
@@ -43,6 +44,16 @@ a few millions common SNPs to genotype on each cell. The benefits include the
 reduced confounders, e.g., caused by RNA editing. We normally recommend this if 
 for human, and we provide some `pre-processed SNP list`_.
 
+.. note::
+  Here are some tips if you have genotypes for input donors:
+  
+  1. Imputation can be helpfule if you obtained genotypes for each human  
+     individual from SNP-array or Whole exome-seq. 
+  2. Selection of informative SNPs is useful for filtering out SNPs with 
+     identical or very similar genotypes in all mixed donors. You may consider
+     `AC`, `AF` or similar tag in you donor VCF file. bcftools_ is a very 
+     useful tool for such preprocessing.
+
 
 **Option 2): Calling variants from scRNA-seq**
 
@@ -54,11 +65,10 @@ polymorphisms, specifically SNPs, indels, MNPs, and complex events smaller than
 the length of a short-read sequencing alignment. Importantly, freebayes_ has 
 a set of options to filter reads and variants.
 
-Alternatively, cellsnp-lite_ has a similar feature (still under development) to 
-pileup the whole genome and identify the heterozygous variants in the pooled 
-samples. However, this mode doesn't have a sophisticated model and filtering 
-strategy for indentifying candidate SNPs, and may struggle with confounders 
-from RNA editing.
+We also recommend an alternative method cellsnp-lite_ that is developed by us.  
+Its mode 2b has a similar feature to pileup the whole genome and identify the 
+heterozygous variants in the pooled samples. It has highly comparable 
+accuracry to freebayes_ and bcftools mpileup_ and achieves 5-10x speedups.
 
 
 2. Genotype each cell
@@ -66,7 +76,7 @@ from RNA editing.
 
 Once a list of candidate variants are found, it is more straightforward to 
 genotype each cell. We provide three common methods, with recommendation to 
-``cellSNP``, which is developed by us.
+our cellsnp-lite_ to seamlessly with Vireo.
 
 * The famous mpileup_ from bcftools / samtools is often a good choice. However, 
   this can be slow, as it doesn't allow parallel  computing and it doesn't 
@@ -90,7 +100,8 @@ demultiplex the pooled cells, see the manual_.
 .. _pre-processed SNP list: https://sourceforge.net/projects/cellsnp/files/SNPlist/
 .. _freebayes: https://github.com/ekg/freebayes
 .. _cellSNP: https://github.com/single-cell-genetics/cellSNP
-.. _cellsnp-lite: https://github.com/single-cell-genetics/cellsnp-lite
+.. _cellsnp-lite: https://cellsnp-lite.readthedocs.io/en/latest/manual.html
 .. _mpileup: http://www.htslib.org/doc/bcftools.html
 .. _vartrix: https://github.com/10XGenomics/vartrix
 .. _manual: https://vireosnp.readthedocs.io/en/latest/manual.html
+.. _bcftools: http://samtools.github.io/bcftools/bcftools.html

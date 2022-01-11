@@ -2,15 +2,57 @@
 
 import numpy as np
 
-WeiZhu_colors = np.array(['#4796d7', '#f79e54', '#79a702', '#df5858', '#556cab', 
-                          '#de7a1f', '#ffda5c', '#4b595c', '#6ab186', '#bddbcf', 
-                          '#daad58', '#488a99', '#f79b78', '#ffba00'])
+vireo_colors = np.array(['#4796d7', '#f79e54', '#79a702', '#df5858', '#556cab', 
+                         '#de7a1f', '#ffda5c', '#4b595c', '#6ab186', '#bddbcf', 
+                         '#daad58', '#488a99', '#f79b78', '#ffba00'])
 
 def heat_matrix(X, yticks=None, xticks=None, rotation=45, cmap='BuGn', 
                 alpha=0.6, display_value=True, row_sort=False, 
                 aspect='auto', interpolation='none', **kwargs):
     """
     Plot heatmap of distance matrix
+
+    Parameters
+    ----------
+    X: numpy.array or matrix
+        The matrix to plot in heatmap
+    yticks: list
+        The ticks ids for y axis
+    xticks: list
+        The ticks ids for x axis
+    ratation: scalar
+        The ratation angel for xticks
+    cmap: str
+        The colormap for the heatmap, more options: 
+        https://matplotlib.org/stable/tutorials/colors/colormaps.html
+    alpha: scalar
+        The transparency, value between 0 and 1
+    display_value: bool
+        If True, dispaly the values in the heatmap
+    raw_sort: bool
+        If True, sort the rows with row index as
+        row_idx = np.argsort(np.dot(X, 2**np.arange(X.shape[1])))
+    aspect: str
+        `aspect` in `plt.imshow`
+    interpolation: str
+        `interpolation` in `plt.imshow`
+    **kwargs: keywords & values
+        `**kwargs` for `plt.imshow`
+    
+    Returns
+    -------
+    The return from `plt.imshow`
+
+    Examples
+    --------
+
+    .. plot::
+
+        >>> from vireoSNP.plot import heat_matrix
+        >>> import numpy as np
+        >>> np.random.seed(1)
+        >>> X = np.random.rand(5, 7)
+        >>> heat_matrix(X)
     """
     import matplotlib.pyplot as plt
     
@@ -129,7 +171,7 @@ def anno_heat(X, row_anno=None, col_anno=None,
         dot_row = np.array(np.nansum(X, axis=1)).reshape(-1)
         idx_row = np.argsort(row_num * 2**X.shape[1])# + dot_row / dot_row.max())
 
-        row_colors = WeiZhu_colors[row_num][idx_row]
+        row_colors = vireo_colors[row_num][idx_row]
     else:
         row_colors = None
         row_order_ids = []
@@ -146,7 +188,7 @@ def anno_heat(X, row_anno=None, col_anno=None,
         dot_col = np.array(np.nansum(X, axis=0)).reshape(-1)
         idx_col = np.argsort(col_num * 2**X.shape[0])# + dot_row / dot_row.max())
         
-        col_colors = WeiZhu_colors[col_num][idx_col]
+        col_colors = vireo_colors[col_num][idx_col]
     else:
         col_colors = None
         col_order_ids = []
@@ -161,13 +203,13 @@ def anno_heat(X, row_anno=None, col_anno=None,
     
     if row_anno is not None:
         for i in range(len(row_order_ids)):
-            g.ax_row_dendrogram.bar(0, 0, color=WeiZhu_colors[i],
+            g.ax_row_dendrogram.bar(0, 0, color=vireo_colors[i],
                                     label=row_order_ids[i], linewidth=0)
         g.ax_row_dendrogram.legend(loc="center", ncol=1, title="")
         
     if col_anno is not None:
         for i in range(len(col_order_ids)):
-            g.ax_col_dendrogram.bar(0, 0, color=WeiZhu_colors[i],
+            g.ax_col_dendrogram.bar(0, 0, color=vireo_colors[i],
                                     label=col_order_ids[i], linewidth=0)
         g.ax_col_dendrogram.legend(loc="center", ncol=6, title="")
     

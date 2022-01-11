@@ -77,9 +77,11 @@ def main():
     group1.add_option("--cellRange", type="str", dest="cell_range", default=None,
         help="Range of cells to process, eg. 0-10000 [default: all]")
     group1.add_option("--callAmbientRNAs", dest="check_ambient", default=False,
-        action="store_true", help="If use, detect ambient RNAs.")
+        action="store_true", help=("If use, detect ambient RNAs in each cell "
+        "(under development)"))
     group1.add_option("--nproc", "-p", type="int", dest="nproc", default=1,
-        help="N subprocesses for predicting ambient RNAs [default: %default]")
+        help=("Number of subprocesses for computing - this sacrifices memory "
+        "for speedups [default: %default]"))
 
     parser.add_option_group(group0)
     parser.add_option_group(group1)
@@ -93,7 +95,10 @@ def main():
     ## out directory
     if options.out_dir is None:
         print("Warning: no outDir provided, we use $cellFilePath/vireo.")
-        out_dir = os.path.dirname(os.path.abspath(options.cell_file)) + "/vireo"
+        input_dir = os.path.abspath(options.cell_data)
+        if input_dir is None and options.vartrix_data is not None:
+            input_dir = os.path.abspath(options.cell_data)
+        out_dir = os.path.dirname(input_dir) + "/vireo"
     elif os.path.dirname(options.out_dir) == "":
         out_dir= "./" + options.out_dir
     else:
@@ -147,7 +152,9 @@ def main():
         print("[vireo] Loading donor VCF file ...")
         donor_vcf = load_VCF(options.donor_file, biallelic_only=True,
                              sparse=False, format_list=[options.geno_tag])
-        if (options.geno_tag not in donor_vcf['GenoINFO']):
+        
+        if (donor_vcf['n_SNP_tagged'][0] < 
+            (0.1 * len(donor_vcf['GenoINFO'][options.geno_tag]))):
             print("[vireo] No " + options.geno_tag + " tag in donor genotype; "
                 "please try another tag for genotype, e.g., GT")
             print("        %s" %options.donor_file)

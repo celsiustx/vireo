@@ -1,3 +1,14 @@
+|PyPI| |Docs| |Build Status| |DOI|
+
+.. |PyPI| image:: https://img.shields.io/pypi/v/vireoSNP.svg
+    :target: https://pypi.org/project/vireoSNP
+.. |Docs| image:: https://readthedocs.org/projects/vireosnp/badge/?version=latest
+   :target: https://vireoSNP.readthedocs.io
+.. |Build Status| image:: https://travis-ci.org/single-cell-genetics/vireo.svg?branch=master
+   :target: https://travis-ci.org/single-cell-genetics/vireo
+.. |DOI| image:: https://zenodo.org/badge/187803798.svg
+   :target: https://zenodo.org/badge/latestdoi/187803798
+
 ====
 Home
 ====
@@ -41,9 +52,9 @@ omics data or other batches
 **clones**: `vireoSNP_clones.ipynb`_ gives example on clone reconstruction on 
 mitochondral mutations
 
-.. _donor_match.ipynb: https://github.com/single-cell-genetics/vireo/blob/master/examples/donor_match.ipynb
-.. _vireoSNP_donors.ipynb: https://github.com/single-cell-genetics/vireo/blob/master/examples/vireoSNP_donors.ipynb
-.. _vireoSNP_clones.ipynb: https://github.com/single-cell-genetics/vireo/blob/master/examples/vireoSNP_clones.ipynb
+.. _donor_match.ipynb: https://nbviewer.jupyter.org/github/single-cell-genetics/vireo/blob/master/examples/donor_match.ipynb
+.. _vireoSNP_donors.ipynb: https://nbviewer.jupyter.org/github/single-cell-genetics/vireo/blob/master/examples/vireoSNP_donors.ipynb
+.. _vireoSNP_clones.ipynb: https://nbviewer.jupyter.org/github/single-cell-genetics/vireo/blob/master/examples/vireoSNP_clones.ipynb
 
 
 
@@ -75,3 +86,22 @@ demultiplexing of pooled single-cell RNA-seq data without genotype reference
 <https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1865-2>`_. 
 \ **Genome Biology** \ 20, 273 (2019)
 
+
+.. toctree::
+    :caption: Main
+    :maxdepth: 1
+    :hidden:
+    
+    install
+    manual
+    genotype
+    API
+    release
+
+
+.. toctree::
+    :caption: Notebooks
+    :maxdepth: 1
+    :hidden:
+ 
+    vireoSNP_clones
